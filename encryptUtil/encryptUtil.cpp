@@ -19,9 +19,9 @@ EncryptUtil::EncryptUtil(): stream_buffer_index(0),
                             number_of_threads(0) {}
   
 EncryptUtil::EncryptUtil(std::initializer_list<BYTE> l): key(l), 
-														 stream_buffer_index(0), 
-														 stream_buffer_size(0), 
-														 number_of_threads(0) {
+                                                         stream_buffer_index(0), 
+                                                         stream_buffer_size(0), 
+                                                         number_of_threads(0) {
   chunk_size = key.size();
 }
 
@@ -76,7 +76,7 @@ void EncryptUtil::xor_encrypt_chunk(std::vector<BYTE> &stream_buffer,
     key_index = key_index % chunk_size;
    
     // this lock protects concurrent write access to stream_buffer or key
-   	{
+    {
       std::unique_lock<std::mutex> l(lock);   
 		
       stream_buffer[byte_index] = stream_buffer[byte_index] ^ thread_key[thread_id][key_index];
@@ -95,8 +95,8 @@ void EncryptUtil::xor_encrypt_chunk(std::vector<BYTE> &stream_buffer,
 }
 
 void EncryptUtil::xor_encrypt_chunk(std::vector<BYTE> &stream_buffer, 
-									long first_processed_byte, 
-									long number_of_bytes) {
+                                    long first_processed_byte, 
+                                    long number_of_bytes) {
   long key_index = 0;
 	
   for (long byte_index = first_processed_byte; byte_index < first_processed_byte + number_of_bytes; byte_index++) {        	  	
@@ -138,10 +138,10 @@ bool EncryptUtil::read_key_from_file(const std::string filename) {
   struct stat st;
   stat(filename.c_str(), &st);
 
-	if(!file.is_open()) {
-	  std::cerr << "keyfile not found" << '\n';
-	  return false;
-	}
+  if(!file.is_open()) {
+    std::cerr << "keyfile not found" << '\n';
+    return false;
+  }
     
   // read the data
   key.resize(static_cast<size_t>(st.st_size));
@@ -169,13 +169,13 @@ void EncryptUtil::set_stream_buffer_size(const long stream_buff_size) {
   stream_buffer_size = stream_buff_size * chunk_size;
   
   for(unsigned int i = 0; i < number_of_threads; i++) {
-  	thread_key[i].resize(chunk_size);
+    thread_key[i].resize(chunk_size);
   }
 }
 
 void EncryptUtil::copy_key_to_each_thread() {
   for(unsigned int i = 0; i < number_of_threads; i++) {
-  	copy(key.begin(), key.end(), thread_key[i].begin());
+    copy(key.begin(), key.end(), thread_key[i].begin());
   }
 }
 
@@ -195,8 +195,8 @@ bool EncryptUtil::stream_buffer_encrypt(std::vector<BYTE> &stream_buffer) {
   long number_of_bytes_per_thread = number_of_bytes / number_of_threads; 
 
   if(number_of_bytes < chunk_size) {
-  	number_of_bytes = stream_buffer.size();
-  	number_of_bytes_per_thread = number_of_bytes;
+    number_of_bytes = stream_buffer.size();
+    number_of_bytes_per_thread = number_of_bytes;
   }
    
   // creates as many threads as the user specified
@@ -204,14 +204,14 @@ bool EncryptUtil::stream_buffer_encrypt(std::vector<BYTE> &stream_buffer) {
     long first_chunk_to_process = number_of_bytes_per_thread * thread_id;
   	
     if(number_of_bytes > 0) {
-  	  if(thread_id == number_of_threads - 1) {
-  	    number_of_bytes_per_thread = number_of_bytes; 	
-  	  }
+      if(thread_id == number_of_threads - 1) {
+        number_of_bytes_per_thread = number_of_bytes; 	
+      }
   	 	   
-  	  if(number_of_bytes_per_thread > 0) {
+      if(number_of_bytes_per_thread > 0) {
   	  
 #ifdef DEBUGINFOS
-  	  	std::cerr << "\nthread_id: " << thread_id << ", first_chunk_to_process: " << first_chunk_to_process << ", number_of_bytes_per_thread: " << number_of_bytes_per_thread;
+        std::cerr << "\nthread_id: " << thread_id << ", first_chunk_to_process: " << first_chunk_to_process << ", number_of_bytes_per_thread: " << number_of_bytes_per_thread;
 #endif  	  	
         // start worker threads
         workers.push_back(std::thread(&EncryptUtil::thread_function, 

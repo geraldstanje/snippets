@@ -36,13 +36,13 @@ private:
   
   // this function encrypts the data vector with the key starting at first_processed_chunk
   void xor_encrypt_chunk(std::vector<BYTE> &stream_buffer, 
-	                     long first_proc_chunk, 
-						 long number_of_bytes);
+                         long first_proc_chunk, 
+                         long number_of_bytes);
   void xor_encrypt_chunk(std::vector<BYTE> &stream_buffer, 
-	                     long first_proc_chunk, 
-						 long number_of_bytes,
-						 long number_of_already_proc_bytes, 
-						 long thread_id);
+                         long first_proc_chunk, 
+                         long number_of_bytes,
+                         long number_of_already_proc_bytes, 
+                         long thread_id);
  	
   void copy_key_to_each_thread();
  	
@@ -52,10 +52,10 @@ private:
   // this function represents the worker thread
   // the worker thread takes the stream_buffer and encrypts the buffer from the first_processed_chunk
   void thread_function(std::vector<BYTE> &stream_buffer, 
-	                   long first_processed_chunk, 
-					   long number_of_bytes, 
-					   long number_of_already_proc_bytes, 
-					   long thread_id);
+                       long first_processed_chunk, 
+                       long number_of_bytes, 
+                       long number_of_already_proc_bytes, 
+                       long thread_id);
 
 public:
   EncryptUtil();
