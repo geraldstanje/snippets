@@ -75,7 +75,7 @@ void EncryptUtil::xor_encrypt_chunk(std::vector<BYTE> &stream_buffer,
   for (long byte_index = first_processed_byte; byte_index < first_processed_byte + number_of_bytes; byte_index++) {        	  	
     key_index = key_index % chunk_size;
    
-    // lock shared access to stream_buffer and key
+    // this lock protects concurrent write access to stream_buffer or key
    	{
 		  std::unique_lock<std::mutex> l(lock);   
 		
@@ -115,7 +115,7 @@ bool EncryptUtil::is_digits(const std::string &str) {
   return all_of(str.begin(), str.end(), ::isdigit);  
 }
 
-bool EncryptUtil::set_number_of_threads(std::string num_of_threads_str) {
+bool EncryptUtil::set_number_of_threads(const std::string num_of_threads_str) {
   std::stringstream ss;
   ss << num_of_threads_str;
   ss >> number_of_threads;

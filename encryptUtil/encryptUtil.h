@@ -13,7 +13,7 @@ typedef unsigned char BYTE;
 
 class EncryptUtil {
 private:
-	std::mutex lock; // handles multiple access to the stream_buffer and key, protects multiple write access
+	std::mutex lock; // protects concurrent write access to stream_buffer or key
   std::vector<BYTE> key; // we store the key in memory
   std::vector<std::vector<BYTE>> thread_key; // each thread stores a copy of the key
   long stream_buffer_index;
@@ -25,15 +25,13 @@ private:
 private:
 	// checks if the string passed only contains digits
   bool is_digits(const std::string &str);
-  // helper functions to debug: creates a hex string
+  // helper functions used for debugging, formats the vector into a hex string
   std::string char_to_hex(unsigned char c);
   std::string get_hex_string(const std::vector<BYTE> &vec);
     
-  // calculates the number of chunks
-  long set_num_of_chunks(long stream_buffer_size);
-    
-  // rotates the key vector by number_of_bits to the left
+  // rotates the vector by 1 to the left
   void rotate_1bit_left(std::vector<BYTE> &array);
+  // rotates the vector by number_of_bits to the left
   void rotate_bits_left(std::vector<BYTE> &array, long number_of_bits);
   
   // this function encrypts the data vector with the key starting at first_processed_chunk
@@ -58,7 +56,7 @@ public:
   // reads the key from the file and assigns it to the key vector
   bool read_key_from_file(const std::string filename);
   // sets the number of threads specified via the command line argument
-  bool set_number_of_threads(std::string num_of_threads_str);
+  bool set_number_of_threads(const std::string num_of_threads_str);
   // processes the enryption on the input stream
   bool input_stream_encrypt();
 };

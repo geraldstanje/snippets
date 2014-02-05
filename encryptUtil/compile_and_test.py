@@ -10,7 +10,8 @@ import time
 # Test case 1: default test given in the question
 # Test case 2: plain text size is a multiple of key size
 # Test case 3: plain text size is smaller than key size
-# Test case 4: plain text size is longer
+# Test case 4: plain text size is longer than key size
+# Test case 5: plain text size is very long (depends on resize_factor_test_5) -> exterm test
 key                   = ["\x11\x11\x11",
                          "\xf0\xf0",
                          "\x01\x01",
@@ -30,16 +31,17 @@ cypher_text_expected  = ["\x11\x11\x11\x22",
                          "\x01\x02\x04\x08\x10\x20\x40\x80\x01\x02\x04\x08\x10\x20\x40\x80\x01\x02\x04\x08\x10\x20\x40\x80\x01\x02\x04\x08\x10\x20\x40\x80\x01\x02\x04\x08\x10\x20\x40\x80\x01\x02\x04\x08\x10\x20\x40\x80\x01\x02\x04\x08\x10\x20\x40\x80\x01\x02\x04\x08\x10\x20\x40\x80",
                          "\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x22\x22\x22\x22\x22\x22\x22\x22\x22\x22\x22\x22\x44\x44\x44\x44\x44\x44\x44\x44\x44\x44\x44\x44\x88\x88\x88\x88\x88\x88\x88\x88\x88\x88\x88\x88"]
 threads_num_max = 10
-copy_plain_text_test_5 = True # extends testcase 5
-resize_factor_test_5 = 20000 # extends testcase 5
+resize_plain_text_test_5 = True # if this is set to True -> resizes testcase 5
+resize_factor_test_5 = 20000 # resize factor of test case 5
 
-# compile the program
+# compile the encryptUtil program
 os.system('clear; make clean; make')
 
+# run the test suite
 for i in range(0,len(key)):
 	for thread_num in range(1,threads_num_max+1):
-		if copy_plain_text_test_5 == True and i == 5:
-			copy_plain_text_test_5 = False			
+		if resize_plain_text_test_5 == True and i == 5:
+			resize_plain_text_test_5 = False			
 			plain_text[i] = plain_text[i] * resize_factor_test_5
 			cypher_text_expected[i] = cypher_text_expected[i] * resize_factor_test_5
 			
