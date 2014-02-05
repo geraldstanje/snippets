@@ -30,18 +30,18 @@ cypher_text_expected  = ["\x11\x11\x11\x22",
                          "\x01\x02\x04\x08\x10\x20\x40\x80\x01\x02\x04\x08\x10\x20\x40\x80\x01\x02\x04\x08\x10\x20\x40\x80\x01\x02\x04\x08\x10\x20\x40\x80\x01\x02\x04\x08\x10\x20\x40\x80\x01\x02\x04\x08\x10\x20\x40\x80\x01\x02\x04\x08\x10\x20\x40\x80\x01\x02\x04\x08\x10\x20\x40\x80",
                          "\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x22\x22\x22\x22\x22\x22\x22\x22\x22\x22\x22\x22\x44\x44\x44\x44\x44\x44\x44\x44\x44\x44\x44\x44\x88\x88\x88\x88\x88\x88\x88\x88\x88\x88\x88\x88"]
 threads_num_max = 10
-copy_plain_text = True # extends testcase 5
-resize_factor = 10000;
+copy_plain_text_test_5 = True # extends testcase 5
+resize_factor_test_5 = 20000 # extends testcase 5
 
 # compile the program
 os.system('clear; make clean; make')
 
 for i in range(0,len(key)):
-	for thread_num in range(1,threads_num_max):
-		if copy_plain_text == True and i == 5:
-			copy_plain_text = False
-			plain_text[i] = plain_text[i] * resize_factor
-			cypher_text_expected[i] = cypher_text_expected[i] * resize_factor
+	for thread_num in range(1,threads_num_max+1):
+		if copy_plain_text_test_5 == True and i == 5:
+			copy_plain_text_test_5 = False			
+			plain_text[i] = plain_text[i] * resize_factor_test_5
+			cypher_text_expected[i] = cypher_text_expected[i] * resize_factor_test_5
 			
 		# Create the plain_text file
 		fo = open("plain_text", "wb")

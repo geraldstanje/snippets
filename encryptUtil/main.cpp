@@ -3,12 +3,12 @@
 int main(int argc, char *argv[]) 
 {  
   // copy all arguments in a container of strings
-  vector<string> allArgs(argv, argv + argc);
+  std::vector<std::string> allArgs(argv, argv + argc);
  
 	// argc should be 5 for a correct execution
 	if (allArgs.size() != 5) {
     // argv[0] is the program name
-    cerr << "usage: "<< allArgs[0] << " [-n #] [-k keyfile]\n";
+    std::cerr << "usage: "<< allArgs[0] << " [-n #] [-k keyfile]\n";
 		return -1;
 	}
     
@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
   if(!crypto.set_number_of_threads(allArgs[2])) {
   	return -1;
   }
-  crypto.set_stream_buffer_size(10000); // 3 fails
+  crypto.set_stream_buffer_size(10000);
   if(!crypto.input_stream_encrypt()) {
   	return -1;
   }

@@ -2,7 +2,7 @@ all: encryptUtil
 OBJS = main.o encryptUtil.o
 CC = g++
 DEBUG = -g
-CFLAGS = -Wall -O3 -c $(DEBUG) -std=c++11 -pthread
+CFLAGS = -Wall -O3 -c -D_GLIBCXX_USE_SCHED_YIELD $(DEBUG) -std=c++11 -pthread
 LFLAGS = -Wall $(DEBUG) -lpthread
 
 encryptUtil : $(OBJS)
