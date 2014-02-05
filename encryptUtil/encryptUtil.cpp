@@ -75,7 +75,7 @@ void EncryptUtil::xor_encrypt_chunk(std::vector<BYTE> &stream_buffer,
   for (long byte_index = first_processed_byte; byte_index < first_processed_byte + number_of_bytes; byte_index++) {        	  	
     key_index = key_index % chunk_size;
    
-    // this lock protects concurrent write access to stream_buffer or key
+    // this lock protects concurrent write access to stream_buffer and key
     {
       std::unique_lock<std::mutex> l(lock);   
 		

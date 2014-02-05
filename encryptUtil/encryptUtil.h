@@ -13,7 +13,7 @@ typedef unsigned char BYTE;
 
 class EncryptUtil {
 private:
-  std::mutex lock; // protects concurrent write access to stream_buffer or key
+  std::mutex lock; // protects concurrent write access to stream_buffer and key
   std::vector<BYTE> key; // we store the key in memory
   std::vector<std::vector<BYTE>> thread_key; // each thread stores a copy of the key
   long stream_buffer_index;
@@ -42,7 +42,7 @@ private:
                          long number_of_bytes,
                          long number_of_already_proc_bytes, 
                          long thread_id);
- 	
+  // stores a copy of the key in each thread
   void copy_key_to_each_thread();
  	
   // this function encrypts the stream buffer, therefore the encryption is equally distributed accross
