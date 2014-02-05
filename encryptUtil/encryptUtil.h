@@ -20,7 +20,6 @@ private:
   long stream_buffer_size; // is a multiple of the chunk_size
   long chunk_size; // represents the size of the key
   unsigned int number_of_threads;
-  unsigned int number_of_rotations;
   
 private:
   // checks if the string passed only contains digits
