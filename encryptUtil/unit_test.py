@@ -31,6 +31,7 @@ cypher_text_expected  = ["\x11\x11\x11\x22",
                          "\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x22\x22\x22\x22\x22\x22\x22\x22\x22\x22\x22\x22\x44\x44\x44\x44\x44\x44\x44\x44\x44\x44\x44\x44\x88\x88\x88\x88\x88\x88\x88\x88\x88\x88\x88\x88"]
 threads_num_max = 10
 copy_plain_text = True # extends testcase 5
+resize_factor = 10000;
 
 # compile the program
 os.system('clear; make clean; make')
@@ -39,8 +40,8 @@ for i in range(0,len(key)):
 	for thread_num in range(1,threads_num_max):
 		if copy_plain_text == True and i == 5:
 			copy_plain_text = False
-			plain_text[i] = plain_text[i] * 1000
-			cypher_text_expected[i] = cypher_text_expected[i] * 1000
+			plain_text[i] = plain_text[i] * resize_factor
+			cypher_text_expected[i] = cypher_text_expected[i] * resize_factor
 			
 		# Create the plain_text file
 		fo = open("plain_text", "wb")
