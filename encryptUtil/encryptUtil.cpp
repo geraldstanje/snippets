@@ -49,7 +49,7 @@ void EncryptUtil::rotate_1bit_left(std::vector<BYTE> &array) {
   BYTE overflow = (0x80 & array[0]) >> 7;
 
   for (long i = (array.size() - 1); i >= 0; i--) {	
-  	shifted = (array[i] << 1) | overflow;
+    shifted = (array[i] << 1) | overflow;
     overflow = (0x80 & array[i]) >> 7;
     array[i] = shifted;
   }
@@ -61,7 +61,7 @@ void EncryptUtil::rotate_bits_left(std::vector<BYTE> &array,
   number_of_bits = number_of_bits % (array.size() * 8);
 
   for(long i = 0; i < number_of_bits; i++) { 
-  	rotate_1bit_left(array);
+    rotate_1bit_left(array);
   }
 }
 
@@ -86,7 +86,7 @@ void EncryptUtil::xor_encrypt_chunk(std::vector<BYTE> &stream_buffer,
 
       if((number_of_already_proc_bytes % (chunk_size)) == 0) {
         rotate_bits_left(thread_key[thread_id], 1);
-	  }
+      }
     }
     
     // allowing other threads to run
@@ -106,7 +106,7 @@ void EncryptUtil::xor_encrypt_chunk(std::vector<BYTE> &stream_buffer,
     key_index++;
 		
     if((key_index % (chunk_size)) == 0) {
-    	rotate_bits_left(key, 1);
+      rotate_bits_left(key, 1);
     }
   }
 }
@@ -175,7 +175,7 @@ void EncryptUtil::set_stream_buffer_size(const long stream_buff_size) {
 
 void EncryptUtil::copy_key_to_each_thread() {
   for(unsigned int i = 0; i < number_of_threads; i++) {
-    copy(key.begin(), key.end(), thread_key[i].begin());
+    std::copy(key.begin(), key.end(), thread_key[i].begin());
   }
 }
 
