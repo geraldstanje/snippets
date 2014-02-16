@@ -2,7 +2,7 @@ all: rounds
 OBJS = main.o rounds.o
 CC = gcc
 DEBUG = -g
-CFLAGS = -Wall -O3 -c -std=c++11
+CFLAGS = -Wall -O3 -c -std=c11
 LFLAGS = -Wall $(DEBUG)
 
 rounds : $(OBJS)
