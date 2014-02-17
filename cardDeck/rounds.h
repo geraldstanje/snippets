@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+
 //#define DEBUG_INFOS
 
 typedef struct card {
