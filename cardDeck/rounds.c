@@ -134,7 +134,7 @@ static bool init_cards(list_t *hand, unsigned long number_of_cards) {
     for (i = 0; i < number_of_cards; i++) {
         is_valid = add_new_card(hand, i);
         
-	if(!is_valid) {
+        if(!is_valid) {
             return false;
         }
     }
@@ -244,9 +244,10 @@ bool get_number_of_rounds(unsigned long number_of_cards, unsigned long *rounds) 
     }
     
     bool is_equal = false;
+    bool is_overflow = false;
     
     do {
-        (*rounds)++;
+        (*rounds)++;        
         next_round(hand, table);
         pickup_hand(&hand, &table);
 
@@ -255,10 +256,20 @@ bool get_number_of_rounds(unsigned long number_of_cards, unsigned long *rounds) 
 #endif
 
         is_equal = is_sorted(hand, number_of_cards);
+        
+        // check for an overflow of rounds
+        if(*rounds == ULONG_MAX && !is_equal) {
+            is_overflow = true;
+            break;
+        }
     } while (!is_equal);
 
     delete_list(&hand);
     delete_list(&table);
 
+    if(is_overflow) {
+        return false;
+    }
+    
     return true;
 }
