@@ -44,7 +44,7 @@ My code review:
   - Please return the address of the char array: return &errorString[0];
 
 2.) Comments to void main( void ):
-- Line 21: DoSomething returns an error code, but calls GetErrorString only if the return value err is 1
+- Line 21/22: DoSomething returns an error code, but calls GetErrorString only if the return value err is 1
   - please call GetErrorString if there is an error
   - please tell me which error codes DoSomething will return, than we can make the change together
   - we should also change the name of the function DoSomething to be more meaningful
