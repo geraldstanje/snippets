@@ -2,6 +2,8 @@
 #define rounds_h
 
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 //#define DEBUG_INFOS
 
 typedef struct card {
