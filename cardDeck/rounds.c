@@ -1,6 +1,4 @@
 #include "rounds.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 /*
  * creates a new card node
