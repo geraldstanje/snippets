@@ -1,21 +1,19 @@
 #ifndef rounds_h
 #define rounds_h
 
-#include <stdio.h>
-#include <math.h>
 #include <stdbool.h>
-#include <stdlib.h>
+//#define DEBUG_INFOS
 
 typedef struct card {
-	int number;
-	struct card_t *next;
+    unsigned int long number;
+    struct card_t *next;
 }card_t;
 
 typedef struct list {
-	card_t *front;
-	card_t *back;
+    card_t *front;
+    card_t *back;
 }list_t;
 
-unsigned int get_number_of_rounds(unsigned int number_of_cards);
+bool get_number_of_rounds(unsigned long number_of_cards, unsigned long *rounds);
 
 #endif
