@@ -138,7 +138,7 @@ static bool init_cards(list_t *hand, unsigned long number_of_cards) {
     for (i = 0; i < number_of_cards; i++) {
         is_valid = add_new_card(hand, i);
         
-		if(!is_valid) {
+	if(!is_valid) {
             return false;
         }
     }
