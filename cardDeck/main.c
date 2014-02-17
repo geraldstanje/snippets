@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-	unsigned long number_of_cards = 0;
+    unsigned long number_of_cards = 0;
     // converts the second command line argument to a unsigned long
     // checks if the converted number is a positive number
     if(!is_pos_numeric(argv[1], &number_of_cards)) {
