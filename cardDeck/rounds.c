@@ -216,7 +216,7 @@ static bool init_lists(list_t **hand, list_t **table, unsigned long number_of_ca
     }
 	
     // initialize cards for hand
-	bool is_valid = init_cards(*hand, number_of_cards);
+    bool is_valid = init_cards(*hand, number_of_cards);
     if(!is_valid) {
         delete_list(hand); // cleanup already allocated memory from before
         delete_list(table); // cleanup already allocated memory from before
