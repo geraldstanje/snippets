@@ -32,19 +32,19 @@ My code review:
 1.) Comments to char *GetErrorString( int x ):
 - Line 3: the function GetErrorString returns a local char array (in line 16), this is not allowed by the standard: char errorString[20];
   - please change to static char errorString[20] or
-  - allocate the char array on the heap (using malloc), don't forget to deallocate the char array (using free)
+  - you could also allocate the char array on the heap (using malloc), don't forget to deallocate the char array (using free)
   - initialize the declared errorString array: memset(&errorString, '\0', sizeof(errorString));
 - Line 8: the string assignment is wrong: errorString = "Success -- No error.";
   - please change to strcpy(errorString, "Success -- No error.")
 - Line 11: the string assignment is wrong: errorString = "Overflow!";
   - please change to strcpy(errorString, "Overflow!")
-- Line 13: please also handle case default in the switch statement
+- Line 13: please also handle case default in the switch statement, this is not strictly required but reduces the chance of bugs in the code 
 - Line 15: you can remove line 15, since we properly initialize the errorString at the beginning
 - Line 16: the return satement is wrong: return errorString;
   - Please return the address of the char array: return &errorString[0];
 
 2.) Comments to void main( void ):
-- Line 21/22: DoSomething returns an error code, but calls GetErrorString only if the value err is 1. 
-  - please call GetErrorString if there is an error, at the moment GetErrorString will never be called
+- Line 21/22: DoSomething returns an error code, but calls GetErrorString only if the value err is not 0.
+  - case 0 in GetErrorString will never be called, please check if its still required
   - please tell me which error codes DoSomething will return, than we can make the change together
   - we should also change the name of the function DoSomething to be more meaningful
