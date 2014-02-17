@@ -1,0 +1,49 @@
+A fellow developer has asked you to review the following code. Please
+provide your feedback:
+
+1.  char *GetErrorString( int x )
+2.  {
+3.      char errorString[20];
+4.
+5.      switch ( x )
+6.      {
+7.          case 0:
+8.              errorString = "Success -- No error.";
+9.              break;
+10.         case 2:
+11.             errorString = "Overflow!";
+12.             break;
+13.     }
+14.
+15.     errorString[19] = 0;
+16.     return errorString;
+17. }
+18.
+19. void main( void )
+20. {
+21.     int err = DoSomething();
+22.     if ( err )
+23.     {
+24.         printf( "%s\n", GetErrorString( err ) );
+25.     }
+26. }
+
+My code review:
+1.) Comments to char *GetErrorString( int x ):
+- Line 3: the function GetErrorString returns a local char array (in line 16), this is not allowed by the standard: char errorString[20];
+  - please change to static char errorString[20] or
+  - allocate the char array on the heap (using malloc), don't forget to deallocate the char array (using free)
+  - initialize the declared errorString array: memset(&errorString, '\0', sizeof(errorString));
+- Line 8: the string assignment is wrong: errorString = "Success -- No error.";
+  - please change to strcpy(errorString, "Success -- No error.")
+- Line 11: the string assignment is wrong: errorString = "Overflow!";
+  - please change to strcpy(errorString, "Overflow!")
+- Line 13: please also handle case 1 and case default in the switch statement
+- Line 15: you can remove line 15, since we properly initialize the errorString at the beginning
+- Line 16: the return satement is wrong: return errorString;
+  - Please return the address of the char array: return &errorString[0];
+
+2.) Comments to void main( void ):
+- Line 21: DoSomething returns an error code, but calls GetErrorString only if the return value err is 1
+  - please call GetErrorString if there is an error
+  - we should also change the name of the function DoSomething to be more meaningful
