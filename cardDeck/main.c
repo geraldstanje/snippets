@@ -6,6 +6,9 @@
 #include <ctype.h>
 #include <string.h>
 
+/*
+ * checks if the char string is a valid postive number of type unsigned long
+ */
 bool is_pos_numeric(const char *c_str, unsigned long *number) {
     if (c_str == NULL || 
         *c_str == '\0' || 
@@ -44,7 +47,7 @@ int main(int argc, char *argv[]) {
     
     unsigned long rounds = 0;
     if(!get_number_of_rounds(number_of_cards, &rounds)) {
-        printf("error: get_number_of_rounds\n");
+        printf("error: get_number_of_rounds, run out of memory or overflow of variable rounds\n");
         return -1; 
     }
 	
