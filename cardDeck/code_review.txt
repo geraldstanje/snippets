@@ -38,7 +38,7 @@ My code review:
   - please change to strcpy(errorString, "Success -- No error.")
 - Line 11: the string assignment is wrong: errorString = "Overflow!";
   - please change to strcpy(errorString, "Overflow!")
-- Line 13: please also handle case 1 and case default in the switch statement
+- Line 13: please also handle case default in the switch statement
 - Line 15: you can remove line 15, since we properly initialize the errorString at the beginning
 - Line 16: the return satement is wrong: return errorString;
   - Please return the address of the char array: return &errorString[0];
