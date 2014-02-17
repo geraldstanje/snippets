@@ -45,6 +45,7 @@ My code review:
 
 2.) Comments to void main( void ):
 - Line 21/22: DoSomething returns an error code, but calls GetErrorString only if the value err is not 0.
-  - case 0 in GetErrorString will never be called, please check if its still required
+  - case 0 in GetErrorString will never be called, please check if this case is still required
+  - case 1 in GetErrorString is not implemented, is this right?
   - please tell me which error codes DoSomething will return, than we can make the change together
   - we should also change the name of the function DoSomething to be more meaningful
