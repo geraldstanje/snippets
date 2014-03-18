@@ -1,7 +1,7 @@
 package main
 
 /*
-This snippet is written in GoLang and posts a comment on your Facebook pinwall. Includes: login, post comment, logout
+This snippet is written in GoLang and posts a comment on your twitter timeline. Includes: login, post comment, logout
 fb_login_m.exe test@gmail.com password this text will posted
 */
 
