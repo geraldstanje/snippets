@@ -6,15 +6,15 @@
 
 class semaphore {
 private:
-    std::mutex mtx;
-    std::condition_variable cv;
-	unsigned int count;
-		
+  std::mutex mtx;
+  std::condition_variable cv;
+  unsigned int count;
+    
 public:
-    semaphore();
-    void reset();
-    void notify();
-    void wait(unsigned int thread_id);
+  semaphore();
+  void reset();
+  void notify();
+  void wait(unsigned int thread_id);
 };
 
 #endif
