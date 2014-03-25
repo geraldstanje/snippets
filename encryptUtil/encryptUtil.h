@@ -13,8 +13,8 @@ typedef unsigned char BYTE;
 
 class EncryptUtil {
 private:
-	semaphore sem;
-	std::vector<std::vector<BYTE>> stream_buffer_vec;
+  semaphore sem;
+  std::vector<std::vector<BYTE>> stream_buffer_vec;
   std::vector<BYTE> key; // we store the key in memory
   long stream_buffer_size; // is a multiple of the chunk_size
   long chunk_size; // represents the size of the key
@@ -23,7 +23,7 @@ private:
   unsigned int write_out;
   
 private:
-	// checks if the string passed only contains digits
+  // checks if the string passed only contains digits
   bool is_digits(const std::string &str);
   // helper functions used for debugging, formats the vector into a hex string
   std::string char_to_hex(unsigned char c);
@@ -36,7 +36,7 @@ private:
   
   // this function encrypts the data vector with the key starting at first_processed_chunk
   void xor_encrypt_chunk(std::vector<BYTE> &stream_buffer, std::vector<BYTE> &key, long first_proc_chunk, long number_of_bytes);
- 	
+   
   // this function encrypts the stream buffer, therefore the encryption is equally distributed accross
   // the number of threads specified via the command line argument
   bool stream_buffer_encrypt(std::vector<BYTE> &stream_buffer, std::vector<BYTE> &key);
@@ -48,8 +48,8 @@ public:
   EncryptUtil();
   EncryptUtil(std::initializer_list<BYTE> l);
 
-	void create_stream_buffer_vec();
-	
+  void create_stream_buffer_vec();
+  
   // sets the stream buffer size, which is a multiple of the key size
   void set_stream_buffer_size(const long stream_buff_size);
   // reads the key from the file and assigns it to the key vector
