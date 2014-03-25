@@ -1,13 +1,16 @@
 all: encryptUtil
-OBJS = main.o encryptUtil.o
+OBJS = semaphore.o encryptUtil.o main.o
 CC = g++
 DEBUG = -g
-CFLAGS = -Wall -O3 -c -D_GLIBCXX_USE_SCHED_YIELD $(DEBUG) -std=c++11 -pthread
+CFLAGS = -Wall -O3 -c $(DEBUG) -std=c++11 -pthread -D_GLIBCXX_USE_NANOSLEEP -D_GLIBCXX_USE_SCHED_YIELD
 LFLAGS = -Wall $(DEBUG) -lpthread
 
 encryptUtil : $(OBJS)
 	$(CC) $(LFLAGS) $(OBJS) -o encryptUtil
 
+semaphore.o : semaphore.h
+	$(CC) $(CFLAGS) semaphore.cpp
+	
 encryptUtil.o : encryptUtil.h
 	$(CC) $(CFLAGS) encryptUtil.cpp
 
