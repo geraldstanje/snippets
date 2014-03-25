@@ -5,12 +5,12 @@ int main(int argc, char *argv[])
   // copy all arguments in a container of strings
   std::vector<std::string> allArgs(argv, argv + argc);
  
-	// argc should be 5 for a correct execution
-	if (allArgs.size() != 5) {
-    // argv[0] is the program name
-    std::cerr << "usage: "<< allArgs[0] << " [-n #] [-k keyfile]\n";
-		return -1;
-	}
+  // argc should be 5 for a correct execution
+  if (allArgs.size() != 5) {
+  // argv[0] is the program name
+  std::cerr << "usage: "<< allArgs[0] << " [-n #] [-k keyfile]\n";
+    return -1;
+  }
     
   EncryptUtil crypto;
   if(!crypto.read_key_from_file(allArgs[4])) {
@@ -24,5 +24,5 @@ int main(int argc, char *argv[])
   	return -1;
   }
   
-	return 0;
+  return 0;
 }
