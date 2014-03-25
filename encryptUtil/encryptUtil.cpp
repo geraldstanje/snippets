@@ -14,41 +14,41 @@
 #include <chrono>
 
 EncryptUtil::EncryptUtil(): stream_buffer_size(0), 
-														chunk_size(0), 
-														number_of_threads(0),
-														write_out(0) {}
+                            chunk_size(0), 
+                            number_of_threads(0),
+                            write_out(0) {}
   
 EncryptUtil::EncryptUtil(std::initializer_list<BYTE> l): key(l), 
-																										     stream_buffer_size(0), 
-																										     number_of_threads(0) {
+                                                         stream_buffer_size(0), 
+                                                         number_of_threads(0) {
   chunk_size = key.size();
 }
 
 std::string char_to_hex(unsigned char c) {
   std::stringstream stream;
   
-	stream << std::setfill('0') << std::setw(2) << std::hex << (int)c;
-	
-	return stream.str();
+  stream << std::setfill('0') << std::setw(2) << std::hex << (int)c;
+  
+  return stream.str();
 }
 
 
 std::string get_hex_string(const std::vector<BYTE> &vec) {
- std::string out;
-	
- for(long i = 0; i < vec.size(); i++) {
-   out += char_to_hex(vec[i]);
- }
-	
- return out;
+  std::string out;
+  
+  for(long i = 0; i < vec.size(); i++) {
+    out += char_to_hex(vec[i]);
+  }
+  
+  return out;
 }
 
 void EncryptUtil::rotate_1bit_left(std::vector<BYTE> &array) {
-	BYTE shifted = 0x00;    
+  BYTE shifted = 0x00;    
   BYTE overflow = (0x80 & array[0]) >> 7;
 
-  for (long i = (array.size() - 1); i >= 0; i--) {	
-  	shifted = (array[i] << 1) | overflow;
+  for (long i = (array.size() - 1); i >= 0; i--) {  
+    shifted = (array[i] << 1) | overflow;
     overflow = (0x80 & array[i]) >> 7;
     array[i] = shifted;
   }
@@ -56,28 +56,28 @@ void EncryptUtil::rotate_1bit_left(std::vector<BYTE> &array) {
 
 void EncryptUtil::rotate_bits_left(std::vector<BYTE> &array, 
                                    long number_of_bits) {
-	
-	number_of_bits = number_of_bits % (array.size() * 8);
+  
+  number_of_bits = number_of_bits % (array.size() * 8);
 
   for(long i = 0; i < number_of_bits; i++) { 
-  	rotate_1bit_left(array);
+    rotate_1bit_left(array);
   }
 }
 
 void EncryptUtil::xor_encrypt_chunk(std::vector<BYTE> &stream_buffer, 
-																		std::vector<BYTE> &key,
-																	  long first_processed_byte, 
-																	  long number_of_bytes) {
+                                    std::vector<BYTE> &key,
+                                    long first_processed_byte, 
+                                    long number_of_bytes) {
   long key_index = 0;
-	
-  for (long byte_index = first_processed_byte; byte_index < first_processed_byte + number_of_bytes; byte_index++) {        	  	
+  
+  for (long byte_index = first_processed_byte; byte_index < first_processed_byte + number_of_bytes; byte_index++) {              
     key_index = key_index % chunk_size;
-			
-		stream_buffer[byte_index] = stream_buffer[byte_index] ^ key[key_index];   
+      
+    stream_buffer[byte_index] = stream_buffer[byte_index] ^ key[key_index];   
     key_index++;
-		
+    
     if((key_index % (chunk_size)) == 0) {
-    	rotate_bits_left(key, 1);
+      rotate_bits_left(key, 1);
     }
   }
 }
@@ -103,26 +103,26 @@ bool EncryptUtil::set_number_of_threads(const std::string num_of_threads_str) {
 
 bool EncryptUtil::read_key_from_file(const std::string filename) {
   std::ifstream file;
-	file.open(filename.c_str(), std::ios::in | std::ios::binary);
-	struct stat st;
+  file.open(filename.c_str(), std::ios::in | std::ios::binary);
+  struct stat st;
   stat(filename.c_str(), &st);
 
-	if(!file.is_open()) {
-	  std::cerr << "keyfile not found" << '\n';
-	  return false;
-	}
+  if(!file.is_open()) {
+    std::cerr << "keyfile not found" << '\n';
+    return false;
+  }
     
   // read the data
-	key.resize(static_cast<size_t>(st.st_size));
+  key.resize(static_cast<size_t>(st.st_size));
   file.read(reinterpret_cast<char*>(&key[0]), static_cast<size_t>(st.st_size));
-      		
+          
   if(key.size() > 0) {
     chunk_size = key.size();
   }
       
   // close file
-	file.close();
-	return true;
+  file.close();
+  return true;
 }
 
 void EncryptUtil::set_stream_buffer_size(const long stream_buff_size) {          
@@ -135,7 +135,7 @@ bool EncryptUtil::stream_buffer_encrypt(std::vector<BYTE> &stream_buffer, std::v
   }
 
 #ifdef DEBUGINFOS  
-	std::cerr << "\nfirst_chunk_to_process: " << 0 << ", stream_buffer.size(): " << stream_buffer.size();
+  std::cerr << "\nfirst_chunk_to_process: " << 0 << ", stream_buffer.size(): " << stream_buffer.size();
 #endif
 
   xor_encrypt_chunk(stream_buffer, key, 0, stream_buffer.size());
@@ -144,17 +144,17 @@ bool EncryptUtil::stream_buffer_encrypt(std::vector<BYTE> &stream_buffer, std::v
 }
  
 void EncryptUtil::thread_encrypt(std::vector<BYTE> &stream_buffer, std::vector<BYTE> key, unsigned int thread_id) {
-	// perform the encryption on the stream buffer  
+  // perform the encryption on the stream buffer  
   stream_buffer_encrypt(stream_buffer, key);
   
   sem.wait(thread_id);
   std::copy(stream_buffer.begin(), stream_buffer.end(), std::ostream_iterator<char>(std::cout));
-	sem.notify();
+  sem.notify();
 }
 
 void EncryptUtil::create_stream_buffer_vec() {
-	stream_buffer_vec.resize(number_of_threads);
-	
+  stream_buffer_vec.resize(number_of_threads);
+  
   for(unsigned int i = 0; i < number_of_threads; i++) {
     stream_buffer_vec[i].resize(stream_buffer_size);
   }
@@ -173,41 +173,41 @@ bool EncryptUtil::input_stream_encrypt() {
 #endif
 
 #ifdef THREADING
-	std::vector<std::thread> workers;
-	unsigned int thread_id = 0;
-	create_stream_buffer_vec();
-	
+  std::vector<std::thread> workers;
+  unsigned int thread_id = 0;
+  create_stream_buffer_vec();
+  
   do { 
-		std::cin.read(reinterpret_cast<char*>(&stream_buffer_vec[thread_id][0]), stream_buffer_size);
-		total_read = std::cin.gcount();
-		stream_buffer_vec[thread_id].resize(total_read);
-		
-		workers.push_back(std::thread(&EncryptUtil::thread_encrypt, 
-   														    this, 
-   														    std::ref(stream_buffer_vec[thread_id]), // pass stream_buffer by ref to thread
-   														    key, // copy ket to thread
-   														    thread_id));
-   	thread_id++;   											
+    std::cin.read(reinterpret_cast<char*>(&stream_buffer_vec[thread_id][0]), stream_buffer_size);
+    total_read = std::cin.gcount();
+    stream_buffer_vec[thread_id].resize(total_read);
+    
+    workers.push_back(std::thread(&EncryptUtil::thread_encrypt, 
+                                   this, 
+                                   std::ref(stream_buffer_vec[thread_id]), // pass stream_buffer by ref to thread
+                                   key, // copy ket to thread
+                                   thread_id));
+    thread_id++;                         
 
     if(thread_id == number_of_threads || total_read == 0) {
-  		// wait for worker threads to complete
-  		for (std::thread &t: workers) {
-    		if (t.joinable()) {
-      		t.join();
-    		}
-  		}
-  		
-  		workers.clear();
-  		thread_id = 0;
-  		sem.reset();
-  	}
-  	
-  	rotate_bits_left(key, stream_buffer_size / chunk_size);
+      // wait for worker threads to complete
+      for (std::thread &t: workers) {
+        if (t.joinable()) {
+          t.join();
+        }
+      }
+      
+      workers.clear();
+      thread_id = 0;
+      sem.reset();
+    }
+    
+    rotate_bits_left(key, stream_buffer_size / chunk_size);
   }while(total_read > 0);
-	
+  
 #else
 
-	do {
+  do {
     std::vector<BYTE> stream_buffer(stream_buffer_size);
     
     std::cin.read(reinterpret_cast<char*>(&stream_buffer[0]), stream_buffer_size);
@@ -215,18 +215,18 @@ bool EncryptUtil::input_stream_encrypt() {
     stream_buffer.resize(total_read);
     
     if(total_read > 0) {
-    	// perform the encryption on the stream buffer  
-    	stream_buffer_encrypt(stream_buffer, key);
+      // perform the encryption on the stream buffer  
+      stream_buffer_encrypt(stream_buffer, key);
     
-    	// print stream_buffer std::vector to stdout
-    	std::copy(stream_buffer.begin(), stream_buffer.end(), std::ostream_iterator<char>(std::cout));
-		
- 			rotate_bits_left(key, stream_buffer_size / chunk_size);
- 		}
-	}while(total_read > 0);
-	
+      // print stream_buffer std::vector to stdout
+      std::copy(stream_buffer.begin(), stream_buffer.end(), std::ostream_iterator<char>(std::cout));
+    
+      rotate_bits_left(key, stream_buffer_size / chunk_size);
+    }
+  }while(total_read > 0);
+  
 #endif
- 			
+       
 #ifdef BENCHMARKING
   auto end = std::chrono::steady_clock::now();
   auto diff = end - start; 
