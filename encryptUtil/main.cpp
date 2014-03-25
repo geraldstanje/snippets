@@ -7,8 +7,8 @@ int main(int argc, char *argv[])
  
   // argc should be 5 for a correct execution
   if (allArgs.size() != 5) {
-  // argv[0] is the program name
-  std::cerr << "usage: "<< allArgs[0] << " [-n #] [-k keyfile]\n";
+    // argv[0] is the program name
+    std::cerr << "usage: "<< allArgs[0] << " [-n #] [-k keyfile]\n";
     return -1;
   }
     
