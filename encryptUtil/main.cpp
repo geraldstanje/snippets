@@ -14,14 +14,14 @@ int main(int argc, char *argv[])
     
   EncryptUtil crypto;
   if(!crypto.read_key_from_file(allArgs[4])) {
-  	return -1;
+    return -1;
   }
   if(!crypto.set_number_of_threads(allArgs[2])) {
-  	return -1;
+    return -1;
   }
   crypto.set_stream_buffer_size(1000);
   if(!crypto.input_stream_encrypt()) {
-  	return -1;
+    return -1;
   }
   
   return 0;
