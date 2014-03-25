@@ -32,7 +32,7 @@ cypher_text_expected  = ["\x11\x11\x11\x22",
                          "\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x11\x22\x22\x22\x22\x22\x22\x22\x22\x22\x22\x22\x22\x44\x44\x44\x44\x44\x44\x44\x44\x44\x44\x44\x44\x88\x88\x88\x88\x88\x88\x88\x88\x88\x88\x88\x88"]
 threads_num_max = 10
 resize_plain_text_test_5 = True # if this is set to True -> resizes testcase 5
-resize_factor_test_5 = 20000 # resize factor of test case 5
+resize_factor_test_5 = 50000 # resize factor of test case 5
 
 # compile the encryptUtil program
 os.system('clear; make clean; make')
