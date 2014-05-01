@@ -20,6 +20,8 @@ import (
   //"strconv"
 )
 
+const debug = false
+
 func get_data(s string, start_str string, end_str string) (string, error) {
   var data string
  
@@ -100,8 +102,8 @@ func (t *TwitterEngine) send_http_request(urlstr string, send_post_data bool, po
   str := string(b)
     
   // print cookies
-  fmt.Println("cookies:")
-  for _, c := range resp.Cookies() { fmt.Println(c) }
+  //fmt.Println("cookies:")
+  //for _, c := range resp.Cookies() { fmt.Println(c) }
 
   return str, redirect_url, nil
 }
@@ -132,11 +134,13 @@ func (t *TwitterEngine) twitter_login(email, pass string) (string, error) {
     
   s, redirect_url, _ = t.send_http_request(redirect_url, true, data)
 
-  err = write_to_file("output2.html", s)
-  if err != nil {
-    return "", fmt.Errorf("Write file failed: %s", err)
+  if (debug) {
+    err = write_to_file("output1.html", s)
+    if err != nil {
+      return "", fmt.Errorf("Write file failed: %s", err)
+    }
   }
-    
+
   return authenticity_token, nil
 }
 
@@ -150,9 +154,11 @@ func (t *TwitterEngine) twitter_geo_locate(city string) (string, error) {
   
   place_id, _ = get_data(s, "data-place-id=\\\"", "\\\"")
 
-  err = write_to_file("output3.html", s)
-  if err != nil {
-    return "", fmt.Errorf("Write file failed: %s", err)
+  if (debug) {
+    err = write_to_file("output2.html", s)
+    if err != nil {
+      return "", fmt.Errorf("Write file failed: %s", err)
+    }
   }
     
   return place_id, nil
@@ -170,14 +176,16 @@ func (t *TwitterEngine) twitter_post_comment(authenticity_token string, comment 
         
   s, _, _ = t.send_http_request("https://twitter.com/i/tweet/create", true, data)
 
-  err = write_to_file("output4.html", s)
-  if err != nil {
-    return "", fmt.Errorf("Write file failed: %s", err)
-  }
-    
   // extract some data for the get request
   logout_url, _ := get_data(s, "id=\"signout-form\" action=\"/", "\"")
   logout_url = "https://twitter.com/" + logout_url
+
+  if (debug) {
+    err = write_to_file("output3.html", s)
+    if err != nil {
+      return "", fmt.Errorf("Write file failed: %s", err)
+    }
+  }
 
   return logout_url, nil
 }
@@ -192,9 +200,11 @@ func (t *TwitterEngine) twitter_logout(authenticity_token string, logout_url str
                    
   s, _, _ = t.send_http_request(logout_url, true, data)
   
-  err = write_to_file("output5.html", s)
-  if err != nil {
-    return fmt.Errorf("Write file failed: %s", err)
+  if (debug) {
+    err = write_to_file("output4.html", s)
+    if err != nil {
+      return fmt.Errorf("Write file failed: %s", err)
+    }
   }
 
   return nil
