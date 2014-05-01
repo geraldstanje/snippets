@@ -100,10 +100,12 @@ func (t *TwitterEngine) send_http_request(urlstr string, send_post_data bool, po
     return "", "", fmt.Errorf("Read HTML body failed: %s", err)
   }
   str := string(b)
-    
-  // print cookies
-  //fmt.Println("cookies:")
-  //for _, c := range resp.Cookies() { fmt.Println(c) }
+   
+  if (debug) { 
+    // print cookies
+    fmt.Println("cookies:")
+    for _, c := range resp.Cookies() { fmt.Println(c) }
+  }
 
   return str, redirect_url, nil
 }
