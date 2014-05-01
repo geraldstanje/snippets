@@ -145,31 +145,32 @@ func twitter_login(TwitterEngine *TwitterEngine, email string, pass string) (str
   return authenticity_token, nil
 }
 
-func twitter_geo_locate(TwitterEngine *TwitterEngine, authenticity_token string) (error) {
+func twitter_geo_locate(TwitterEngine *TwitterEngine, city string) (string, error) {
   var err error
   var s string
-
-  data := url.Values{"authenticity_token": {authenticity_token}}
-  s, _, _ = send_http_request(TwitterEngine, "https://twitter.com/account/geo_locate", true, data)
+  var place_id string
+  
+  city = strings.Replace(city, " ", "+", -1)
+  s, _, _ = send_http_request(TwitterEngine, "https://twitter.com/account/geo_search?is_prefix=1&query=" + city, false, nil)
+  
+  place_id, _ = get_data(s, "data-place-id=\\\"", "\\\"")
 
   err = write_to_file("output3.html", s)
   if err != nil {
-    return fmt.Errorf("Write file failed: %s", err)
+    return "", fmt.Errorf("Write file failed: %s", err)
   }
     
-  return nil
+  return place_id, nil
 }
 
-func twitter_post_comment(TwitterEngine *TwitterEngine, authenticity_token string, comment []string) (string, error) {   
+func twitter_post_comment(TwitterEngine *TwitterEngine, authenticity_token string, comment []string, place_id string) (string, error) {   
   var err error
   var s string
   var tweet string
   for _, c := range comment { tweet += c + " "}
     
-  // place id from:
-  // http://nominatim.openstreetmap.org/search?q=800%20Ocean%20Drive,%20Miami%20Beach,%20USA&format=xml  
   data := url.Values{"status": {tweet},
-                     "place_id": {"df51dec6f4ee2b2c"}, //4b58830723ec6371"}, //445781941346779136
+                     "place_id": {place_id},
                      "authenticity_token": {authenticity_token}}
         
   s, _, _ = send_http_request(TwitterEngine, "https://twitter.com/i/tweet/create", true, data)
@@ -196,7 +197,7 @@ func twitter_logout(TwitterEngine *TwitterEngine, authenticity_token string, log
                    
   s, _, _ = send_http_request(TwitterEngine, logout_url, true, data)
   
-  err = write_to_file("output4.html", s)
+  err = write_to_file("output5.html", s)
   if err != nil {
     return fmt.Errorf("Write file failed: %s", err)
   }
@@ -222,7 +223,7 @@ func main() {
   var TwitterEngine TwitterEngine = *NewTwitterEngine()
  
   authenticity_token, _ := twitter_login(&TwitterEngine, email, pass)
-  twitter_geo_locate(&TwitterEngine, authenticity_token)
-  logout_url, _ := twitter_post_comment(&TwitterEngine, authenticity_token, text)
+  place_id, _ := twitter_geo_locate(&TwitterEngine, "New York")
+  logout_url, _ := twitter_post_comment(&TwitterEngine, authenticity_token, text, place_id)
   twitter_logout(&TwitterEngine, authenticity_token, logout_url)
 }
