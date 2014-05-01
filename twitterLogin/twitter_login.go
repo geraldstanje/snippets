@@ -70,17 +70,17 @@ func (t *TwitterEngine) send_http_request(urlstr string, send_post_data bool, po
     if err != nil {
        return "", "", fmt.Errorf("Post request failed: %s", err)
     }
-
-    req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-    req.Header.Set("Accept-Encoding", "gzip,deflate,sdch")
-    req.Header.Set("Accept-Language", "en-US,en;q=0.8")
-    req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-    req.Header.Set("Host", "twitter.com")
-    req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:16.0) Gecko/20100101 Firefox/16.0")
-    req.Header.Set("Origin", "https://twitter.com")
-    req.Header.Set("Referer", "https://twitter.com/")
-    req.Header.Set("Cache-Control", "max-age=0")
   }
+
+  req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+  //req.Header.Set("Accept-Encoding", "gzip,deflate,sdch")
+  req.Header.Set("Accept-Language", "en-US,en;q=0.8")
+  req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+  req.Header.Set("Host", "twitter.com")
+  req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:16.0) Gecko/20100101 Firefox/16.0")
+  req.Header.Set("Origin", "https://twitter.com")
+  req.Header.Set("Referer", "https://twitter.com/")
+  req.Header.Set("Cache-Control", "max-age=0")
 
   resp, err := t.Client.Do(req)
   if err != nil {
@@ -216,7 +216,7 @@ func main() {
   var text = args[2:]
 
   jar, _ := cookiejar.New(nil)
-  t := TwitterEngine{Client: &http.Client{nil, nil, jar}}
+  t := TwitterEngine{Client: &http.Client{Jar: jar}}
 
   authenticity_token, _ := t.twitter_login(email, pass)
   place_id, _ := t.twitter_geo_locate("New York")
