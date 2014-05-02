@@ -44,14 +44,13 @@ func get_data(s string, start_str string, end_str string) (string, error) {
 
 func write_to_file(file_str string, s string) error {
   file, err := os.Create(file_str)
-
-  if err == nil {
-    file.WriteString(s)
-    defer file.Close()
-    return nil
+  if err != nil {
+    return err
   }
-
-  return err
+  
+  file.WriteString(s)
+  defer file.Close()
+  return nil
 }
 
 type TwitterEngine struct {
@@ -115,17 +114,26 @@ func (t *TwitterEngine) twitter_login(email, pass string) (string, error) {
   var s string
   var redirect_url string
 
-  s, redirect_url, _ = t.send_http_request("https://twitter.com/login", false, nil)
+  s, redirect_url, err = t.send_http_request("https://twitter.com/login", false, nil)
+  if err != nil {
+    return "", err
+  }
 
   err = write_to_file("output1.html", s)
   if err != nil {
     return "", fmt.Errorf("Write file failed: %s", err)
   }
     
-  redirect_url, _ = get_data(s, "<form action=\"https", "\"")
+  redirect_url, err = get_data(s, "<form action=\"https", "\"")
+  if err != nil {
+    return "", err
+  }
   redirect_url = "https" + redirect_url
-  authenticity_token, _ := get_data(s, "name=\"authenticity_token\" value=\"", "\">")
-    
+  authenticity_token, err := get_data(s, "name=\"authenticity_token\" value=\"", "\">")
+  if err != nil {
+    return "", err
+  }
+
   data := url.Values{"session[username_or_email]": {email},
                      "session[password]": {pass},
                      "remember_me": {"1"},
@@ -134,7 +142,10 @@ func (t *TwitterEngine) twitter_login(email, pass string) (string, error) {
                      "redirect_after_login": {"/"},
                      "authenticity_token": {authenticity_token}}
     
-  s, redirect_url, _ = t.send_http_request(redirect_url, true, data)
+  s, redirect_url, err = t.send_http_request(redirect_url, true, data)
+  if err != nil {
+    return "", err
+  }
 
   if (debug) {
     err = write_to_file("output1.html", s)
@@ -152,9 +163,15 @@ func (t *TwitterEngine) twitter_geo_locate(city string) (string, error) {
   var place_id string
   
   city = strings.Replace(city, " ", "+", -1)
-  s, _, _ = t.send_http_request("https://twitter.com/account/geo_search?is_prefix=1&query=" + city, false, nil)
-  
-  place_id, _ = get_data(s, "data-place-id=\\\"", "\\\"")
+  s, _, err = t.send_http_request("https://twitter.com/account/geo_search?is_prefix=1&query=" + city, false, nil)
+  if err != nil {
+    return "", err
+  }
+
+  place_id, err = get_data(s, "data-place-id=\\\"", "\\\"")
+  if err != nil {
+    return "", err
+  }
 
   if (debug) {
     err = write_to_file("output2.html", s)
@@ -176,10 +193,17 @@ func (t *TwitterEngine) twitter_post_comment(authenticity_token string, comment 
                      "place_id": {place_id},
                      "authenticity_token": {authenticity_token}}
         
-  s, _, _ = t.send_http_request("https://twitter.com/i/tweet/create", true, data)
+  s, _, err = t.send_http_request("https://twitter.com/i/tweet/create", true, data)
+  if err != nil {
+    return "", err
+  }
 
   // extract some data for the get request
-  logout_url, _ := get_data(s, "id=\"signout-form\" action=\"/", "\"")
+  logout_url, err := get_data(s, "id=\"signout-form\" action=\"/", "\"")
+  if err != nil {
+    return "", err
+  }
+
   logout_url = "https://twitter.com/" + logout_url
 
   if (debug) {
@@ -200,8 +224,11 @@ func (t *TwitterEngine) twitter_logout(authenticity_token string, logout_url str
                      "scribe_log": {},
                      "authenticity_token": {authenticity_token}}
                    
-  s, _, _ = t.send_http_request(logout_url, true, data)
-  
+  s, _, err = t.send_http_request(logout_url, true, data)
+  if err != nil {
+    return err
+  }
+
   if (debug) {
     err = write_to_file("output4.html", s)
     if err != nil {
@@ -226,12 +253,28 @@ func main() {
   var email = args[0]
   var pass = args[1]
   var text = args[2:]
+  var err error
 
   jar, _ := cookiejar.New(nil)
   t := TwitterEngine{Client: &http.Client{Jar: jar}}
 
-  authenticity_token, _ := t.twitter_login(email, pass)
-  place_id, _ := t.twitter_geo_locate("New York")
-  logout_url, _ := t.twitter_post_comment(authenticity_token, text, place_id)
-  t.twitter_logout(authenticity_token, logout_url)
+  authenticity_token, err := t.twitter_login(email, pass)
+  if err != nil {
+    fmt.Println("%s", err)
+    return
+  }
+  place_id, err := t.twitter_geo_locate("New York")
+  if err != nil {
+    fmt.Println("%s", err)
+    return
+  }
+  logout_url, err := t.twitter_post_comment(authenticity_token, text, place_id)
+  if err != nil {
+    fmt.Println("%s", err)
+    return
+  }
+  err = t.twitter_logout(authenticity_token, logout_url)
+  if err != nil {
+    fmt.Println("%s", err)
+  }
 }
