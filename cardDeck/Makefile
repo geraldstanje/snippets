@@ -6,7 +6,7 @@ CFLAGS = -Wall -O3 -c -std=c11
 LFLAGS = -Wall $(DEBUG)
 
 rounds : $(OBJS)
-	$(CC) $(LFLAGS) $(OBJS) -o rounds
+	$(CC) $(OBJS) -o rounds $(LFLAGS)
 
 rounds.o : rounds.h
 	$(CC) $(CFLAGS) rounds.c
