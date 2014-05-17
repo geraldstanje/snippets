@@ -6,7 +6,7 @@ CFLAGS = -Wall -O3 -c $(DEBUG) -std=c++11 -pthread -D_GLIBCXX_USE_NANOSLEEP -D_G
 LFLAGS = -Wall $(DEBUG) -lpthread
 
 encryptUtil : $(OBJS)
-	$(CC) $(LFLAGS) $(OBJS) -o encryptUtil
+	$(CC) $(OBJS) -o encryptUtil $(LFLAGS)
 
 semaphore.o : semaphore.h
 	$(CC) $(CFLAGS) semaphore.cpp
