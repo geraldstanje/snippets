@@ -83,19 +83,19 @@ func (t *TwitterEngine) send_http_request(urlstr string, send_post_data bool, po
   req.Header.Set("Referer", "https://twitter.com/")
   req.Header.Set("Cache-Control", "max-age=0")
 
+  if (debug) { 
+    dump, err := httputil.DumpRequest(req, true)
+    if err == nil {
+      fmt.Println("request header: " + string(dump) + "\n")
+    }
+  }
+
   resp, err := t.Client.Do(req)
   if err != nil {
     return "", "", fmt.Errorf("Http request failed: %s", err)
   }
                 
   defer resp.Body.Close()
-        
-  if (debug) { 
-    dump, err := httputil.DumpRequest(req, false)
-    if err == nil {
-      fmt.Println("request header: " + string(dump))
-    }
-  }
 
   // should be: redirect_url := resp.Request.URL.String()
   redirect_url, _ := url.QueryUnescape(resp.Request.URL.String())
