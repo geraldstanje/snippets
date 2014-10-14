@@ -230,7 +230,7 @@ bool EncryptUtil::input_stream_encrypt() {
 #ifdef BENCHMARKING
   auto end = std::chrono::steady_clock::now();
   auto diff = end - start; 
-  std::cerr << "\nruntime stream_encrypt: " << std::chrono::duration <double, std::milli> (diff).count() << "ms";
+  std::cerr << std::chrono::duration <double, std::milli> (diff).count();
 #endif
   
   return true;
